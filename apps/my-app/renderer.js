@@ -1,4 +1,5 @@
 const openFileButton = document.getElementById('open-file');
+const saveFileButton = document.getElementById('save-file');
 const textareaForFile = document.getElementById('fileContent');
 
 document.getElementById('sendMessage').addEventListener('click', () => {
@@ -23,3 +24,7 @@ openFileButton.addEventListener('click', async () => {
     textareaForFile.value = fileContent || '';
 })
 
+saveFileButton.addEventListener('click', async () => {
+    const content = textareaForFile.value;
+    await window.electronAPI.saveFile(content);
+});

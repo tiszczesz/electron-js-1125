@@ -6,4 +6,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   getAppInfo: () => ipcRenderer.invoke('get-app-info'),
   openFile: () => ipcRenderer.invoke('open-file'),
+  saveFile: (content) => ipcRenderer.invoke('save-file', content),
 })
