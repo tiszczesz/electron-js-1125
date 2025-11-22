@@ -1,11 +1,13 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, Tray, globalShortcut } = require('electron')
 const path = require('node:path')
+
+let mainWindow = null;
 
 function createWindow () {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 800,
+  mainWindow = new BrowserWindow({
+    width: 300,
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
@@ -19,10 +21,33 @@ function createWindow () {
   // mainWindow.webContents.openDevTools()
 }
 
+const isMac = process.platform === 'darwin';
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  globalShortcut.register('CommandOrControl+Option+I', () => {
+    mainWindow.webContents.toggleDevTools();
+  });
+  const menu = Menu.buildFromTemplate([
+    {
+      label: 'File',
+      submenu: [
+        { role: 'forceReload' },
+        { role: 'quit' }
+      ]
+    }
+  ]);
+
+  Menu.setApplicationMenu(menu);
+
+  const tray = new Tray(path.join(__dirname, 'tip.png'));
+
+  tray.setContextMenu(Menu.buildFromTemplate([
+    { label: 'Quit', role: 'quit' }
+  ]));
+
   createWindow()
 
   app.on('activate', function () {
@@ -42,12 +67,16 @@ app.on('window-all-closed', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-ipcMain.handle('send-message', async (event, message) => {
-  console.log('Received message from renderer:', message);
-
-  return 'Message received loud and clear!';
-});
-
 ipcMain.on('send-message', (event, message) => {
   console.log('Received message from renderer 2:', message);
+});
+
+ipcMain.handle('get-app-info', async () => {
+  return {
+    name: app.getName(),
+    version: app.getVersion(),
+    chromeVersion: process.versions.chrome,
+    nodeVersion: process.versions.node,
+    electronVersion: process.versions.electron,
+  }
 });
