@@ -4,8 +4,41 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
     "build:css": "npx tailwindcss -i ./styles.css -o ./dist/styles.css --watch",
     "start": "electron ."
+  },
+  "build": {
+    "appId": "com.electron.minimal-repro",
+    "productName": "Minimal Repro",
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "directories": {
+      "buildResources": "assets",
+      "output": "releases"
+    }
   },
   "repository": "https://github.com/electron/minimal-repro",
   "keywords": [
@@ -21,7 +54,8 @@
     "autoprefixer": "^10.4.22",
     "electron": "^39.2.3",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.1.17",
+    "electron-builder": "^26.0.12"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.17"
