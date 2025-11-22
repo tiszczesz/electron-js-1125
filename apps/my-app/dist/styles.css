@@ -1,0 +1,8 @@
+/*! tailwindcss v4.1.17 | MIT License | https://tailwindcss.com */
+.flex {
+  display: flex;
+}
+:root {
+  --background-color: #282c34;
+  --text-color: #61dafb;
+}
